@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" , content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>practice</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        $(function(){
+            $("input[type='radio']").click(function (){
+                $(".result h2").eq($(".result h2").index(this)).append("<span>■<span>");
+                console.log($(this).find('span'));
+                $(this).find('sum').text($(this).find('span').length);
+            });
+        });
+
+        $(function () {
+            $(".result2 h2").click(function () {
+                $(this).append("<span>■</span>");
+                console.log($(this).find('span'));
+                $(this).find('sum').text($(this).find('span').length);
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    <b>
+        <p>오늘 점심은 뭘 먹었나요?</p>
+    </b>
+    <input type="radio">한식</label>
+    <input type="radio">중식</label>
+    <input type="radio">일식</label>
+    <input type="radio">그냥굶으렴</label>
+
+    <br>
+
+    <b>
+        <div class="result">
+            <h2>한식<sum></sum>
+            </h2>
+            <h2>중식<sum></sum>
+            </h2>
+            <h2>일식<sum></sum>
+            </h2>
+            <h2>그냥굶으렴<sum></sum>
+            </h2>
+        </div>
+
+    </b>
+
+    <hr>
+
+    <b>
+        <p>오늘점심은 뭘 먹었나요?</p>
+    </b>
+
+    <div class="result2">
+        <h2>한식<sum></sum>
+        </h2>
+        <h2>중식<sum></sum>
+        </h2>
+        <h2>일식<sum></sum>
+        </h2>
+        <h2>그냥굶으렴<sum></sum>
+        </h2>
+    </div>
+
+</body>
+
+</html>
