@@ -1,0 +1,35 @@
+<!DOCTYPE html><!--결제 api 코드-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+<body>
+    <body>
+        <script>
+          var clientKey = 'test_ck_YZ1aOwX7K8mxZAXgEzQryQxzvNPG'
+          var tossPayments = TossPayments(clientKey)
+          tossPayments.requestPayment('카드', {
+            amount: 1,
+            orderId: 'AD8aZDpbzXs4EQa-UkIX6',
+            orderName: '매치기릿 포인트 충전',
+            customerName: '매치기릿아무개',
+            successUrl: 'http://www.naver.com',
+            failUrl: 'http://www.daum.net',
+          })
+          .catch(function (error) {
+            if (error.code === 'USER_CANCEL') {
+              location.href='http://naver.com';//성공 시 네이버 사이트
+            } else if (error.code === 'INVALID_CARD_COMPANY') {
+              location.href='http://daum.net';//에러날 시 다음 사이트
+            }
+          });
+        </script>
+      </body>
+</body>
+</html>
+
+
