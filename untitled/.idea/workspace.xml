@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="53fae08a-79f3-4978-98e1-bfbe02ea59d4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../Prac/.classpath" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/.settings/org.eclipse.core.resources.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/CodingTest/CodingTest01.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/CodingTest/CodingTest02.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/CodingTest/CodingTest03.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/CodingTest/CodingTest04.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/CodingTest/CodingTest05.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/CodingTest/CodingTest06.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac/CodingTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac/Copy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac/CreateFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac/FileRead.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac/dir/file.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac/pracChar.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac2/Person.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac2/STR.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac2/STR2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac2/Stream1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac2/StreamR.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac2/StreamRun2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac3/MineSweeper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/bin/Prac3/TRDRun.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/CodingTest/CodingTest01.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/CodingTest/CodingTest02.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/CodingTest/CodingTest03.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/CodingTest/CodingTest04.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/CodingTest/CodingTest05.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/CodingTest/CodingTest06.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac/CodingTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac/Copy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac/CreateFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac/FileRead.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac/dir/file.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac/pracChar.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac2/STR.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac2/STR2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac2/Stream1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac2/StreamR.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac2/StreamRun2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac3/MineSweeper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Prac/src/Prac3/TRDRun.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2T9JTSL4qh1J3xe6XYU6s9bDIN6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="53fae08a-79f3-4978-98e1-bfbe02ea59d4" name="Changes" comment="" />
+      <created>1690449372766</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1690449372766</updated>
+      <workItem from="1690449373761" duration="36000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
