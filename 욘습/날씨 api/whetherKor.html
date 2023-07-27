@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Weather</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1859d1a3cc07166365149da03346b54c&libraries=services"></script>
+</head>
+
+<body>
+    <h1>현재 도시와 날씨 정보</h1>
+    <div id="currentCity"></div>
+    <div id="weatherInfo"></div>
+
+    <script>
+        // Kakao Map API와 OpenWeather API 키를 입력하세요
+        const kakaoMapApiKey = '04076bec2077f5bf9e3ea19dbea286d2';
+        const openWeatherApiKey = '8f9a2d78e4ced421ff43d888eb8eaebd';
+
+        // 현재 위치한 도시 가져오기
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            const geocoder = new kakao.maps.services.Geocoder();
+            geocoder.coord2RegionCode(longitude, latitude, function (result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    const city = result[0].region_2depth_name;
+                    document.getElementById("currentCity").innerHTML = "현재 도시: " + city;
+
+                    // 도시 ID 가져오기
+                    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openWeatherApiKey}`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            // 날씨 정보 가져오기
+                            const weatherCode = data.weather[0].id;
+                            const temperature = (data.main.temp - 273.15).toFixed(1);
+
+                            // 날씨 코드를 한글로 변환
+                            let translatedWeather;
+                            if (weatherCode >= 200 && weatherCode < 300) {
+                                translatedWeather = "천둥번개";
+                            } else if (weatherCode >= 300 && weatherCode < 400) {
+                                translatedWeather = "이슬비";
+                            } else if (weatherCode >= 500 && weatherCode < 600) {
+                                translatedWeather = "비";
+                            } else if (weatherCode >= 600 && weatherCode < 700) {
+                                translatedWeather = "눈";
+                            } else if (weatherCode >= 700 && weatherCode < 800) {
+                                translatedWeather = "안개";
+                            } else if (weatherCode === 800) {
+                                translatedWeather = "맑음";
+                            } else if (weatherCode > 800) {
+                                translatedWeather = "흐림";
+                            } else {
+                                translatedWeather = "날씨 정보 없음";
+                            }
+
+                            const weatherInfo = `날씨: ${translatedWeather}, 온도: ${temperature}°C`;
+                            document.getElementById("weatherInfo").innerHTML = weatherInfo;
+                        })
+                        .catch(error => console.log(error));
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

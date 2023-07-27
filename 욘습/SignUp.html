@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .signUpContainer {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+        }
+        
+        .inputData {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width:50vh;
+        }
+        
+        .signUpInput {
+            border-radius: 10px;
+            padding: 3%;
+            width:  100vh;
+            margin: 3%;
+            box-sizing: border-box;
+        }
+        
+        .signUpTitle {
+            font-weight: bold;
+        }
+        
+        .inputData button {
+            position: absolute;
+            right: 4%;
+            margin-top: 2px;
+        }
+        
+        .duplicateButton {
+            border-radius: 10px;
+            padding: 1%;
+            color:white;
+            transition: color,background-color 0.5s, transform 0.5s; /* 추가 */
+            background-color: skyblue;
+            cursor: pointer;
+        }
+        
+        .duplicateButton:hover {
+            background-color: rgb(132, 213, 245);
+            color:rgb(161, 161, 243);
+            transform: scale(1.2); /* 추가 */
+        }
+        @media (max-width: 767px) {
+            .inputData {
+                width:40vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signUpContainer">
+        <div class="signUpTitle">회원가입</div>
+        <div class="signUp-Items">
+            <div class="inputData">
+                <input class="signUpInput" type="email" placeholder="이메일 00000@example.com" />
+                <button class="duplicateButton" type="button">중복확인</button>
+            </div>
+            <div class="inputData">
+                <input class="signUpInput" type="password" placeholder="비밀번호" />
+            </div>
+            <div class="inputData">
+                <input class="signUpInput" type="text" placeholder="이름" />
+            </div>
+            <div class="inputData">
+                <input class="signUpInput" type="tel" placeholder="전화번호 000-0000-0000" />
+                <button class="duplicateButton" type="button">중복확인</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

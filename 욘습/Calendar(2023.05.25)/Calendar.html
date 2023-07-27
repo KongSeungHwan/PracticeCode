@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/Calendar.css">
+  <title>Document</title>
+  <style>
+    .prev-month {
+      animation: slideRight 0.5s forwards;
+    }
+
+    .next-month {
+      animation: slideLeft 0.5s forwards;
+    }
+
+    @keyframes slideRight {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideLeft {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <title>달력 페이지</title>
+</head>
+<body>
+  <div class="datepicker">
+    <div class="datepicker-top">
+      <div class="month-selector">
+        <button id="prevMonth" class="arrow"><i class="material-icons">&lt</i></button>
+        <span id="currentMonth" class="month-name"></span>
+        <button id="nextMonth" class="arrow"><i class="material-icons">&gt</i></button>
+      </div>
+    </div>
+    <div class="datepicker-calendar">
+      <span class="day">Mo</span>
+      <span class="day">Tu</span>
+      <span class="day">We</span>
+      <span class="day">Th</span>
+      <span class="day">Fr</span>
+      <span class="day">Sa</span>
+      <span class="day">Su</span>
+    </div>
+  </div>
+  
+  <script>
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+    const currentMonthLabel = document.getElementById('currentMonth');
+    const currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    prevMonthBtn.addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      updateCalendar('prev-month');
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      updateCalendar('next-month');
+    });
+
+    function updateCalendar(animationClass) {
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+      const calendarDates = document.querySelector('.datepicker-calendar');
+
+      currentMonthLabel.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
+
+      // Clear previous dates
+      calendarDates.innerHTML = '';
+
+      // Fill in dates for the current month
+      for (let i = 0; i < firstDayIndex; i++) {
+        const emptyDate = document.createElement('button');
+        emptyDate.classList.add('date', 'faded');
+        calendarDates.appendChild(emptyDate);
+      }
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dateButton = document.createElement('button');
+        dateButton.classList.add('date');
+        dateButton.textContent = i;
+        calendarDates.appendChild(dateButton);
+      }
+
+      // Animation
+      calendarDates.classList.add(animationClass);
+      setTimeout(() => {
+        calendarDates.classList.remove(animationClass);
+      }, 500);
+    }
+
+    function getMonthName(monthIndex) {
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      return months[monthIndex];
+    }
+
+    updateCalendar('');
+
+    // Additional code for "Today", "Tomorrow", and "In 2 days" buttons
+    const todayBtn = document.getElementById('todayBtn');
+    const tomorrowBtn = document.getElementById('tomorrowBtn');
+    const in2DaysBtn = document.getElementById('in2DaysBtn');
+
+    todayBtn.addEventListener('click', () => {
+      setCurrentDate();
+      updateCalendar('');
+    });
+
+    tomorrowBtn.addEventListener('click', () => {
+      setCurrentDate(1);
+      updateCalendar('');
+    });
+
+    in2DaysBtn.addEventListener('click', () => {
+      setCurrentDate(2);
+      updateCalendar('');
+    });
+
+    function setCurrentDate(offset = 0) {
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + offset);
+      currentMonth = currentDate.getMonth();
+      currentYear = currentDate.getFullYear();
+    }
+  </script>
+</body>
+</html>
