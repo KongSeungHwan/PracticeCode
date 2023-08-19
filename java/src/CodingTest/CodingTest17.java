@@ -9,6 +9,6 @@ public class CodingTest17 {
         String answer = Arrays.stream(myString.split(""))
                 .map(e-> e.equals("a")? e.toUpperCase():(e.matches("^[B-Z]$"))? e.toLowerCase():e)
                 .collect(Collectors.joining());
-        System.out.println(answer);///////
+        System.out.println(answer);/////////
     }
 }
