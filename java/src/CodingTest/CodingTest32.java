@@ -1,5 +1,10 @@
 package CodingTest;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class CodingTest32 {
     public static void main(String args[]){
         int a =3;
@@ -54,7 +59,7 @@ public class CodingTest32 {
 
         //문자 패턴이 몇번 등장하는가 판별하는 로직
         int[] array ={7, 77, 17};
-        System.out.println(Arrays.stream(array).mapToObj(y-> Arrays.stream(String.valueOf(y).split("")).filter(i->i.equals("7")).count()).collect(Collectors.summingInt(k->k)));
+        System.out.println(Arrays.stream(array).mapToObj(y-> Arrays.stream(String.valueOf(y).split("")).filter(i->i.equals("7")).count()).collect(Collectors.summingInt(k-> Math.toIntExact(k))));
         //7이 몇번 등장하는가 리턴하는 로직
     }
 }

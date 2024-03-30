@@ -1,3 +1,10 @@
+package CodingTest;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class CodingTest33{
     public static void main(String args[]){
         int[][] arr ={{5, 192, 33}, {192, 72, 95}, {33, 95, 999}};
@@ -9,7 +16,7 @@ public class CodingTest33{
 
         String str = "adfcwaaawfawfawfawfawfsdafsvsahbtgdfbh";
         System.out.println(Arrays.stream(strArr)
-                .collect(Collectors.toMap(a->a.length(),a->1,(x,y)->x+=y)).entrySet().stream().min(Map.Entry.comparingByValue(Integer::compareTo)).get().getValue());
+                .collect(Collectors.toMap(a->a.length(), a->1,(x, y)->x+=y)).entrySet().stream().min(Map.Entry.comparingByValue(Integer::compareTo)).get().getValue());
         //map 안의 최대값 구하기
         int[] intArr ={1, 1, 1};
         System.out.println("------------------------------");

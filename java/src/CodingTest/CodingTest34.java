@@ -1,3 +1,9 @@
+package CodingTest;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class CodingTest34{
     public static void main(String args[]){
         int[][] array ={{0, 1, 2},{1, 2, 3},{2, 3, 4},{3, 4, 5}};
