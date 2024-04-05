@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CodingTest01 {
+public class GptCodingTest01 {
     public static void main(String args[]){
         /*FizzBuzz 문제: 1부터 100까지의 숫자 중 3의 배수는 "Fizz", 5의 배수는 "Buzz", 3과 5의 공배수는 "FizzBuzz"를 출력하는 프로그램을 작성하세요.*/
         IntStream.rangeClosed(1,100).forEach(e->{
