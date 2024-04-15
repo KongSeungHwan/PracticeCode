@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1859d1a3cc07166365149da03346b54c&libraries=services,clusterer,drawing"></script>
+    <title>Kakao 지도 마커 찍기</title>
+    <link rel="stylesheet" href="../map/css/map.css" />
+</head>
+<body>
+    <div id="inputArea">
+        <input type="text" id="lat" value="" />
+        <input type="text" id="lon" value="" />
+        <input type="text" id="address" value="" />
+        <button onclick="searchAddress()">주소검색</button>
+        <button onclick="searchMyPoint()">현재 내 위치 주소검색</button>
+        <div id="map"></div>
+    </div>
+    <script src="../map/js/map.js"></script>
+</body>
+</html>
