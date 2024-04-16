@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charting Js</title>
+    <script src="https://code.jscharting.com/latest/jscharting.js"></script>
+    <script type="text/javascript" src="https://code.jscharting.com/latest/modules/maps.js"></script>
+    <script type="text/javascript" src="https://code.jscharting.com/latest/modules/types.js"></script>
+    <style>
+    body{
+      display:flex;
+      flex-direction: row;
+    }
+    </style>
+</head>
+<body>
+    <div id="chartDiv" style="width: 640px; height: 400px; margin: 0px auto"></div>
+    <div id="legend" style="position: absolute; left: 10px; bottom: 10px;"></div>
+    <div id="donutChart" style="width: 200px; height: 200px;"></div>
+    <script>
+        let data = new Map();
+
+        JSC.fetch('./js/world.topo.json')
+            .then(response => response.json())
+            .then(topojsonData => fetchData(topojsonData))
+            .catch(error => console.error('Error loading TopoJSON:', error));
+
+        function fetchData(topojsonData) {
+            const countries = topojsonData.objects.default.geometries;
+            let val1, val2, val3, color;
+            let colors = [];
+            for (let i = 0; i < countries.length; i++) {
+                const countryID = countries[i].id;
+                const countryNm = countries[i].properties.name;
+                val1 = Math.floor(Math.random() * 101);
+                val2 = Math.floor(Math.random() * 101);
+                val3 = Math.floor(Math.random() * 101);
+                if (val1 <= 30)
+                    color = '#008000'; // Green
+                else if (val1 <= 60)
+                    color = '#FFA500'; // Orange
+                else
+                    color = '#FF0000'; // Red
+                data.set(countryID, { name: countryNm, data1: val1, data2: val2, data3: val3 });
+                colors.push(color);
+            }
+            renderMap(topojsonData, data, colors);
+            renderLegend();
+        }
+
+        function renderMap(topojsonData, data, colors) {
+            const chart = JSC.chart('chartDiv', {
+                debug: true,
+                type: 'map',
+                legend_visible: false,
+                mapping_projection: 'mercator',
+                zoom: function(x,y){
+                    console.log(x);
+                    console.log(y);
+                },
+                series: [{
+                    map: 'world',
+                    palette: colors,
+                    opacity: 0.8,
+                    defaultPoint: {
+                        tooltip: function (d) {
+                            let code = d.currentOptions.attributes.mapcode;
+                            let detail = data.get(code);
+                            let tooltipHTML = '';
+                            tooltipHTML += `<strong>국가:</strong> ${detail.name}<br>`;
+                            tooltipHTML += `<strong>국가id:</strong> ${code}<br>`;
+                            tooltipHTML += `<strong>데이터1:</strong> ${detail.data1}<br>`;
+                            tooltipHTML += `<strong>데이터2:</strong> ${detail.data2}<br>`;
+                            tooltipHTML += `<strong>데이터3:</strong> ${detail.data3}<br>`;
+
+
+                            var chart = JSC.chart('donutChart', { 
+                                debug: true, 
+                                legend: { 
+                                    position: 'inside left bottom', 
+                                    template: 
+                                    '%value {%percentOfTotal:n1}% %icon %name'
+                                }, 
+                                title_position: 'center', 
+                                defaultSeries_type: 'pieDonut', 
+                                defaultPoint_label_text: '<b>%name</b>', 
+                                title_label_text: detail.name+' data1,2,3', 
+                                yAxis: { label_text: 'data', formatString: 'n' }, 
+                                series: [ 
+                                    { 
+                                    name: 'Countries', 
+                                    points: [ 
+                                        { name: 'data1', y: detail.data1 }, 
+                                        { name: 'data2', y: detail.data2 }, 
+                                        { name: 'data3', y: detail.data3 }
+                                    ] 
+                                    } 
+                                ] 
+                                }); 
+                            return tooltipHTML;
+                        },
+                        html: true
+                    }
+                }],
+                data: data
+            });
+        }
+
+        // 범례 렌더링 함수
+        function renderLegend() {
+            const legendColors = ['#008000', '#FFA500', '#FF0000'];
+            const legendLabels = ['0 - 30', '31 - 60', '≥ 61'];
+
+            const legendDiv = document.getElementById('legend');
+
+            for (let i = 0; i < legendColors.length; i++) {
+                const color = legendColors[i];
+                const label = legendLabels[i];
+                const colorBox = `<span style="display: inline-block; width: 20px; height: 10px; background-color: ${color}; margin-right: 5px;"></span>`;
+                legendDiv.innerHTML += colorBox+" 수치 : " + label + '<br>';
+            }
+        }
+    </script>
+</body>
+</html>
