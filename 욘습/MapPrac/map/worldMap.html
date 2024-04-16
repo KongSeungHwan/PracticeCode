@@ -1,110 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title></title>
-  <script src="http://d3js.org/d3.v4.js"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Map Chart D3.js</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .tooltip {
+      position: absolute;
+      background-color: lightsteelblue;
+      border: solid 1px #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      opacity: 0;
+      white-space: nowrap;
+    }
+    #world-map{
+      transform: scale(1);
+    }
+  </style>
 </head>
 <body>
-    <svg id="my_dataviz" width="500" height="400"></svg>
+  <svg id="world-map" width="960" height="600"></svg>
 
-    <script>
+  <script>
+    const continentData = new Map();
+    const svg = d3.select("#world-map");
 
-const tooltip = d3.select("#my_dataviz")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
-        // The svg
-        var svg = d3.select("svg"),
-          width = +svg.attr("width"),
-          height = +svg.attr("height");
-        
-        // Map and projection
-        var path = d3.geoPath();
-        var projection = d3.geoMercator()
-          .scale(70)
-          .center([0,20])
-          .translate([width / 2, height / 2]);
-        
-        // Data and color scale
-        var data = d3.map();
-        var colorScale = d3.scaleThreshold()
-          .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
-          .range(d3.schemeBlues[7]);
-        
-        // Load external data and boot
-        d3.queue()
-          .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-          .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
-          .await(ready);
-        
-        function ready(error, topo) {
-        
-          let mouseOver = function(d) {
-            console.log(d);
-            d3.selectAll(".Country")
-              .transition()
-              .duration(200)
-              .style("opacity", .5)
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .style("opacity", 1)
-              tooltip
-      .style("opacity", 1)
-          }
-          const mousemove = function(event, d) {
-    tooltip
-      .html(`The exact value of<br>the Ground Living area is: 1`)
-      .style("left", (event.x)/2 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-      .style("top", (event.y)/2 + "px")
-  }
-        
-          let mouseLeave = function(d) {
-            d3.selectAll(".Country")
-              .transition()
-              .duration(200)
-              .style("opacity", .8)
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .style("stroke", "transparent")
-              tooltip
-      .transition()
-      .duration(200)
-      .style("opacity", 0)
-          }
-        
-          // Draw the map
-          svg.append("g")
-            .selectAll("path")
-            .data(topo.features)
-            .enter()
-            .append("path")
-              // draw each country
-              .attr("d", d3.geoPath()
-                .projection(projection)
-              )
-              // set the color of each country
-              .attr("fill", function (d) {
-                d.total = data.get(d.id) || 0;
-                return colorScale(d.total);
-              })
-              .style("stroke", "transparent")
-              .attr("class", function(d){ return "Country" } )
-              .style("opacity", .8)
-              .on("mouseover", mouseOver )
-              .on("mouseleave", mouseLeave )
-              .on("mousemove", mousemove )
-            }
-        
-        </script>
+    const projection = d3.geoMercator()
+      .scale(130)
+      .translate([480, 420]);
+
+    const path = d3.geoPath()
+      .projection(projection);
+
+    const color = d3.scaleSequential(d3.interpolateBlues);
+
+    function loadData() {
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+    .then(function(world) {
+        // Generate random data for each continent
+        world.features.forEach(function(feature) {
+            const id = feature.id;
+            let obj = {data1: Math.random() * 100 , data2: Math.floor(Math.random() * 100), data3 : Math.floor(Math.random() * 100)}
+            continentData.set(id, obj); // Random data for each continent
+        });
+
+        const colorScale = d3.scaleLinear()
+    .domain([0, 0.3, 0.6, 1])
+    .range(["green", "orange", "red"]);
+
+        // Draw map
+        svg.selectAll("path")
+            .data(world.features)
+            .enter().append("path")
+            .attr("class", "country")
+            .attr("d", path)
+            .attr("fill", function(d) {
+                const continent = d.id;
+                if (continentData.has(continent)) {
+                    const dataValue = continentData.get(continent).data1;
+                    const normalizedValue = dataValue / 100; // 데이터 값을 0에서 1 사이로 정규화
+                    return colorScale(normalizedValue); // 정규화된 값에 대한 색상 반환
+                } else {
+                    return "grey"; // 대륙 데이터가 없는 경우 회색 반환
+                }
+            })
+            .on("mouseover", function(event, d) {
+              
+              const id = d.id;
+              if(!continentData.get(id)) return;
+                d3.select(this)
+                  .attr("fill-opacity", 0.5);
+                const data = continentData.get(id);
+                tooltip.transition().duration(0).style("opacity", 0.9).style("display", "block").style("transform","scale(0.7)");
+                tooltip.html("Country Name:" + d.properties.name +
+                        "<br/>Data1: " + data.data1 +
+                        "<br/>Data2: " + data.data2 +
+                        "<br/>Data3: " + data.data3 +
+                        "<br/><div id='donut-chart'></div>") // 도넛 차트를 툴팁에 추가
+                        .style("left", (event.clientX + 5) + "px")
+                        .style("top", (event.clientY + 5) + "px");
+
+                // 도넛 차트 그리기
+                const donutData = [data.data1, data.data2, data.data3];
+                const width = 100;
+                const height = 100;
+                const radius = Math.min(width, height) / 2;
+
+                const svg = d3.select("#donut-chart")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                const color = d3.scaleOrdinal()
+                    .domain(d3.range(donutData.length))
+                    .range(d3.schemeCategory10);
+
+                const pie = d3.pie()
+                    .value(function(d) { return d; })
+                    .sort(null);
+
+                const arc = d3.arc()
+                    .innerRadius(radius * 0.4)
+                    .outerRadius(radius * 0.8);
+
+                const arcs = svg.selectAll("arc")
+                    .data(pie(donutData))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc");
+
+                arcs.append("path")
+                    .attr("fill", function(d, i) {
+                        return color(i);
+                    })
+                    .attr("d", arc);
+            })
+            .on("mouseout", function(d) {
+                d3.select(this)
+                    .attr("fill-opacity", 1);
+                tooltip.transition().duration(0).style("opacity", 0).style("display", "none");
+            });
+    })
+    .catch(function(error) {
+        console.error("Error loading data:", error);
+    });
+}
+
+loadData();
+
+  </script>
 </body>
 </html>
