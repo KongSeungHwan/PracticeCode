@@ -17,25 +17,33 @@
             color:white;
             display:none;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            width: 50%;
-            max-width: 600px;
+            width: 80%;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 1rem;
             background-color: black;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
+            display:flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
         .container.on {
             opacity: 1;
         }
         #chatContainer {
-            height: 300px;
+            box-sizing: content-box;
+            width: 100%;
+            height:400px;
             overflow-y: auto;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 20px;
+        }
+        #userChat{
+            width:100%;
         }
         .userInput {
             width: calc(100% - 80px);
@@ -87,6 +95,10 @@
             align-items:center;
             cursor:pointer;
         }
+        .chatTitle{
+            font-weight:bolder;
+            font-size: 2rem;
+        }
         .chatIcon img{
             width:50px;
             height:50px;
@@ -95,11 +107,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>ChatGPT API 예제</h1>
+        <div class="chatTitle">ChatGPT API 예제</div>
         
         <div id="chatContainer"></div>
         <div id="loading" style="display: none;">Loading...</div>
-        <textarea class="userInput" id="userInput" placeholder="메시지 입력..." onkeypress="handleKeyPress(event)"></textarea>
+        <div id="userChat"><textarea class="userInput" id="userInput" placeholder="메시지 입력..." onkeypress="handleKeyPress(event)"></textarea></div>
         <button class="sendButton" onclick="sendMessage()">전송</button>
     </div>
     <div class="chatIcon" onclick="openChat()"><img src="./img/chatIcon.svg" alt="챗봇이미지"/></div>
@@ -107,20 +119,20 @@
     <script>
         function openChat(){
             var ele = document.getElementsByClassName("container")[0]; 
-            if(ele.style.display == 'block'){
+            if(ele.style.display == 'flex'){
                 ele.classList.remove("on");
                 setTimeout(function() {
                     ele.style.display = "none";
                 }, 500);
             } else {
-                ele.style.display ="block";
+                ele.style.display ="flex";
                 setTimeout(function() {
                     ele.classList.add("on");
                 }, 50);
             }
         }
         function callChatGPTAPI(userInput) {
-            const api_key = "apikey 기입";
+            const api_key = "sk-proj-VEN3DoeFcjjPENNEz6O5T3BlbkFJKSAlqHHIarl0nF9npNaB";
             const apiUrl = "https://api.openai.com/v1/chat/completions";
             
             const headers = {
@@ -129,7 +141,6 @@
             };
             
             const data = {
-                model: "gpt-3.5-turbo-0125",
                 messages: [
                     { role: "system", content: "" },
                     { role: "user", content: userInput+" 256자 이내로" }
