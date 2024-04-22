@@ -10,16 +10,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jython-standalone-2.7.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/libtensorflow-1.14.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/py4j-0.10.9.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

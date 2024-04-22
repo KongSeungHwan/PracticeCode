@@ -107,7 +107,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="chatTitle">ChatGPT API 예제</div>
+        <div class="chatTitle">ChatGPT API</div>
         
         <div id="chatContainer"></div>
         <div id="loading" style="display: none;">Loading...</div>
@@ -132,7 +132,7 @@
             }
         }
         function callChatGPTAPI(userInput) {
-            const api_key = "sk-proj-VEN3DoeFcjjPENNEz6O5T3BlbkFJKSAlqHHIarl0nF9npNaB";
+            const api_key = "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";
             const apiUrl = "https://api.openai.com/v1/chat/completions";
             
             const headers = {
@@ -141,6 +141,7 @@
             };
             
             const data = {
+                model:"gpt-3.5-turbo",
                 messages: [
                     { role: "system", content: "" },
                     { role: "user", content: userInput+" 256자 이내로" }

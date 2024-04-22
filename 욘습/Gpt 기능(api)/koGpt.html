@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KoGPT API 요청</title>
+</head>
+<body>
+    <div id="response"></div> <!-- API 응답을 표시할 div 요소 -->
+
+    <script>
+
+async function callKOGPTAPI() {
+    const KOGPT_URL = "https://api.kakaobrain.com/v1/inference/kogpt/generation";
+    const prompt = "한글을 창제한 조선의 임금이 누군지 알려주세요.";
+
+    const body = {
+        prompt,
+        max_tokens: 120,
+        n: 2
+    };
+
+    try {
+        const response = await fetch(KOGPT_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "KakaoAK 04076bec2077f5bf9e3ea19dbea286d2", // 여기에 API 키를 입력하세요
+            },
+            body: JSON.stringify(body),
+        });
+
+        const json = await response.json();
+        document.getElementById("response").innerText = json.choices[0].text; // 응답을 div에 표시
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("response").innerText = "API 요청 중 오류가 발생했습니다.";
+    }
+}
+
+// 페이지가 로드될 때 API를 호출하고 응답을 표시
+window.onload = callKOGPTAPI;
+    </script>
+</body>
+</html>
