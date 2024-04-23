@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #vmap{
+            height:900px;
+        }
+        #buttons{
+            position:fixed;
+            bottom: 0;
+            left: 3;
+            width:50%;
+            height: auto;
+        }
+        #buttons input{
+            width:15%;
+        }
+    </style>
+    <script type="text/javascript" src="https://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=A28B11D9-66FD-3A74-94B5-BB75CE5B2818"></script>
+</head>
+<body>
+    <div id="vmap"></div>
+    <div id="buttons">
+     <input type="text" id="lat" value="" readonly/>
+     <input type="text" id="lon" value="" readonly/>
+     <input type="text" id="address" value="" readonly/>
+    </div>
+    <script type="text/javascript">
+        var vmap = vmap = new vw.ol3.Map("vmap",  vw.ol3.MapOptions);
+        var mecPosition = null;
+
+        (function(){
+            console.log(vw.ol3.CameraPosition);
+            searchMyPoint();
+        })();
+
+        vw.ol3.MapOptions = {
+            basemapType: vw.ol3.BasemapType.GRAPHIC
+            , controlDensity: vw.ol3.DensityType.EMPTY
+            , interactionDensity: vw.ol3.DensityType.BASIC
+            , controlsAutoArrange: true
+            , homePosition: vw.ol3.CameraPosition
+            , initPosition: vw.ol3.CameraPosition
+        };
+            
+        
+        function move(x,y,z){
+            var _center = [ x, y ];
+            vmap.getView().setZoom(z);
+            var pan = ol.animation.pan({
+                duration : 2000,
+                source : (vmap.getView().getCenter())
+            });
+            vmap.beforeRender(pan);
+            vmap.getView().setCenter(_center);
+            setTimeout("fnMoveZoom()", 3000);
+        }
+            
+        async function searchMyPoint(){
+            try {
+                var position = await getCurrentPosition();
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+                document.getElementById('lat').value=latitude;
+                document.getElementById('lon').value=longitude;
+                var address = await getCurrentAddress(latitude,longitude);
+                document.getElementById('address').value=address;
+                mecPosition = latLonToMercator(longitude,latitude);
+                move(mecPosition.x,mecPosition.y,10);
+            } catch(error) {
+                console.error("Error getting current position:", error);
+            }
+        }
+
+        function latLonToMercator(lon, lat) {
+            var R = 6378137; // 지구의 반지름 (미터 단위)
+            var x = R * lon * Math.PI / 180;
+            var y = R * Math.log(Math.tan((90 + lat) * Math.PI / 360));
+            return { x: x, y: y };
+        }
+
+        async function getCurrentPosition(){
+            return await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
+            });
+        };
+
+        const getCurrentAddress = async (latitude, longitude) => {
+            try {
+                const response = await fetch(`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${longitude}&y=${latitude}`, {
+                    headers: {
+                        Authorization: `KakaoAK 04076bec2077f5bf9e3ea19dbea286d2`,
+                    },
+                });
+                const data = await response.json();
+                const region1depthName = data?.documents[0]?.region_1depth_name || '';
+                const region2depthName = data?.documents[0]?.region_2depth_name || '';
+                const region3depthName = data?.documents[0]?.region_3depth_name || '';
+                const address = region1depthName+" "+region2depthName+" "+region3depthName;
+                return address;
+            } catch (error) {
+                throw new Error('Failed to get current city');
+            }
+        };
+    </script>
+</body>
+</html>
