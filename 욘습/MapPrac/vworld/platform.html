@@ -15,41 +15,31 @@
 <body>
     <div id="map"></div>
     <script>
-        // JavaScript 코드 시작
-        var param = {
-            name: '침수흔적도',
-            serverUrl: 'www.safemap.go.kr/openApiService/wms/getLayerData.do?apikey=P3K3CGLO-P3K3-P3K3-P3K3-P3K3CGLOY4',
-            layername: 'A2SM_FLUDMARKS',
-            styles: 'A2SM_FludMarks'
-        };
+       // OpenLayers를 사용하여 WMS 레이어를 초기화하는 예시 코드
+        var layers = [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()  // 기본 OSM 레이어
+            }),
+            new ol.layer.Image({
+                source: new ol.source.ImageWMS({
+                    url: 'https://safemap.go.kr/openApiService/wms/getlayerData.do',
+                    params: {'LAYERS': 'LAYER_NAME', 'STYLES': 'STYLES', 'FORMAT': 'image/png'},
+                    ratio: 1,
+                    serverType: 'geoserver',
+                    crossOrigin: 'anonymous'
+                })
+            })
+        ];
 
-        // OpenLayers 지도 생성
-        var map = new OpenLayers.Map('map');
-
-        // WMS 레이어 생성
-        var wmsLayer = new OpenLayers.Layer.WMS(
-            param.name,
-            param.serverUrl,
-            {
-                layers: '' + param.layername,
-                styles: param.styles,
-                format: 'image/png',
-                exceptions: 'text/xml',
-                transparent: true
-            },
-            {
-                isBaseLayer: false
-            }
-        );
-
-        // WMS 레이어 지도에 추가
-        map.addLayer(wmsLayer);
-
-        // 지도 중심점과 줌 레벨 설정
-        var lonLat = new OpenLayers.LonLat(126.978, 37.566).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        var zoom = 10;
-        map.setCenter(lonLat, zoom);
-        // JavaScript 코드 끝
+        // OpenLayers 맵 객체 초기화
+        var map = new ol.Map({
+            layers: layers,
+            target: 'map',  // HTML 요소의 ID
+            view: new ol.View({
+                center: [0, 0],
+                zoom: 1
+            })
+        });
     </script>
 </body>
 </html>
