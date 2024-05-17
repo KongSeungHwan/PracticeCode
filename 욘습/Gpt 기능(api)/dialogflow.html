@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+</head>
+<body>
+    <div id="chat-container"></div>
+    <input type="text" id="user-input">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function displayMessage(message) {
+            var chatContainer = document.getElementById('chat-container');
+            var role = message.role.charAt(0).toUpperCase() + message.role.slice(1);
+            chatContainer.innerHTML += '<div><strong>' + role + ':</strong> ' + message.content + '</div>';
+        }
+
+        function displayChatHistory() {
+            fetch('http://localhost:11434/api/chat?model=llama3')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.messages.forEach(message => {
+                        displayMessage(message);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+
+            fetch('http://localhost:11434/api/chat?model=llama3', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "model": "llama3:8B",
+                    "messages": [{
+                        role: "user",
+                        content: userInput
+                    }]
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayMessage(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 페이지 로드 시 이전 채팅 기록을 가져와서 표시
+        displayChatHistory();
+
+        // 일정한 간격으로 채팅 업데이트
+        setInterval(displayChatHistory, 5000); // 5초마다 업데이트
+    </script>
+</body>
+</html>

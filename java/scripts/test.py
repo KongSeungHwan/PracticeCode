@@ -1,29 +1,30 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# 모델 및 토크나이저 로드
-tokenizer = AutoTokenizer.from_pretrained("skt/ko-gpt-trinity-1.2B-v0.5")
-model = AutoModelForCausalLM.from_pretrained("skt/ko-gpt-trinity-1.2B-v0.5")
+# 모델과 토크나이저 로드
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-70B")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-70B")
 
-# 대화형 텍스트 생성 함수 정의
-def interactive_generate():
+# 대화 생성 함수
+def generate_response(prompt, max_length=100):
+    input_ids = tokenizer.encode(prompt, return_tensors="pt")
+
+    # 모델에 입력 전달하여 응답 생성
+    output = model.generate(input_ids, max_length=max_length, pad_token_id=tokenizer.eos_token_id)
+
+    # 생성된 텍스트 디코딩
+    response = tokenizer.decode(output[0], skip_special_tokens=True)
+
+    return response
+
+def main():
+    print("Meta-Llama-3-8B 대화 봇입니다. 대화를 시작해주세요! (종료하려면 '그만'을 입력하세요)")
     while True:
-        # 사용자 입력 받기
-        print("종료하고 싶으면 '종료'라고 입력해주세요")
-        prompt = input("You: ")
-
-        # 프롬프트가 "종료"인 경우 프로그램 종료
-        if prompt == "종료":
-            print("Goodbye!")
+        user_input = input("사용자: ")
+        if user_input == "그만":
+            print("대화를 종료합니다. 안녕히 가세요!")
             break
+        response = generate_response(user_input)
+        print("봇:", response)
 
-        # 프롬프트를 기반으로 텍스트 생성
-        input_ids = tokenizer.encode(prompt, return_tensors="pt")
-        output = model.generate(input_ids, max_length=150, do_sample=True, pad_token_id=tokenizer.eos_token_id, num_return_sequences=1)
-
-        # 생성된 텍스트 출력
-        for ids in output:
-            generated_text = tokenizer.decode(ids, skip_special_tokens=True)
-            print(generated_text)
-
-# 대화형 텍스트 생성 함수 호출
-interactive_generate()
+if __name__ == "__main__":
+    main()
