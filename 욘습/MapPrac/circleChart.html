@@ -75,7 +75,7 @@
     
     // Define data
     var colors = am5.ColorSet.new(root, {});
-    
+    console.log(colors);
     var data = [
       { "id": "AF", "name": "Afghanistan", "value": 32358260, polygonTemplate: { fill: colors.getIndex(0) } },
       { "id": "AL", "name": "Albania", "value": 3215988, polygonTemplate: { fill: colors.getIndex(8) } },
@@ -279,7 +279,7 @@
         var radius = minRadius + maxRadius * (value - valueLow) / (valueHigh - valueLow);
     
         if (countryPolygon) {
-            console.log(countryPolygon.visualCentroid());
+          console.log(dataContext.polygonTemplate);
           var geometry = am5map.getGeoCircle(countryPolygon.visualCentroid(), radius);
           circleSeries.data.push({
             name: dataContext.name,

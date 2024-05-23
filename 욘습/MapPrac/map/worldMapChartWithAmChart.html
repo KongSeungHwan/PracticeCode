@@ -30,6 +30,8 @@
 
 <!-- Chart code -->
 <script>
+  // Track the currently focused polygon
+  let focusedPolygon = null;
 am5.ready(function() {
   am5.addLicense("AM5M11203148921121");
   // Create root element
@@ -57,40 +59,73 @@ am5.ready(function() {
   // Create polygon series for projected circles
   var circleSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
 
-  var countryValues = {
-  "CN": 1,
-  "IN": 100
-};
-console.log(chart);
-  console.log("polygonSeries.mapPolygons.template");
+    var countryValues = {
+      "CN": 200,
+      "IN": 100,
+      "KR": 50,
+      "US": 300
+    };
+
+// Define default styles
+const defaultFill = am5.color("rgba(255,255,255,1)"); // Default fill color
+const defaultStroke = am5.color(0x000000); // Default stroke color
+const defaultStrokeWidth = 0.1; // Default stroke width
+
+// Define focus styles
+const focusFill = am5.color("rgba(206,145,7,1)");
+const focusStroke = am5.color("rgba(255,255,255,0)");
+const focusStrokeWidth = 0;
+
   polygonSeries.mapPolygons.template.setAll({
-    tooltipText: "{name} {id}",
-    toggleKey: "active",
-    interactive: true,
-    fill: am5.color("rgba(255,255,255,1)"),
-    strokeWidth: 0.1,
-    stroke: am5.color(0x000000),
+    fill: defaultFill,
+    strokeWidth: defaultStrokeWidth,
+    stroke: defaultStroke,
     value: 0
   });
 
-  polygonSeries.mapPolygons.template.states.create("hover", {
-    fill: am5.color("rgba(206,145,7,1)")
+   polygonSeries.events.on("datavalidated", function() {
+    Object.keys(countryValues).forEach(function(countryId) {
+      var countryDataItem = polygonSeries.getDataItemById(countryId);
+      if (countryDataItem && countryDataItem.get("mapPolygon")) {
+        // Apply styles or properties here
+        countryDataItem.get("mapPolygon").setAll({
+          fill: defaultFill, // Example: setting fill color to orange
+          stroke: defaultStroke, // Setting stroke color to black
+          strokeWidth: defaultStrokeWidth, // Setting stroke width
+          tooltipHTML: '<b style="background-color: #004488; color: #F00;">' + "{name}" + '</b>: <span style="color: #00F;">' + countryValues[countryId] + '</span>',
+          toggleKey: "active",
+          interactive: true,
+          cursorOverStyle: "pointer"
+        });
+      }
+    });
   });
 
-  // Register click event
-  polygonSeries.mapPolygons.template.events.on("click", function(ev) {
+ // Register click event
+ polygonSeries.mapPolygons.template.events.on("click", function(ev) {
+   if (ev.target.dataItem.dataContext.id in countryValues) {
+    if (focusedPolygon) {
+      focusedPolygon.set("fill", defaultFill);
+      focusedPolygon.set("strokeWidth", defaultStrokeWidth);
+      focusedPolygon.set("stroke", defaultStroke);
+    }
+    // Change the color and border of the clicked country
+    ev.target.set("fill", focusFill);
+    ev.target.set("strokeWidth", focusStrokeWidth);
+    ev.target.set("stroke", focusStroke);
+
+    focusedPolygon = ev.target;
+
     let countryId = ev.target.dataItem.dataContext.id;
     let countryName = ev.target.dataItem.dataContext.name;
     let value = countryValues[countryId];
-    // You can add code here to update the information displayed in your HTML
+    // Update the information displayed in your HTML
     document.querySelector(".country").innerText = `국가: ${countryName}`;
     document.querySelector(".countryId").innerText = `국가 id: ${countryId}`;
     document.querySelector(".information").innerText = "값: " + (value ? value : "");
-    
+
     // Get the centroid of the clicked country
-    console.log(ev.target.dataItem.dataContext);
     let centroid = am5map.getGeoCentroid(ev.target.dataItem.dataContext.geometry);
-    console.log(centroid);
     chart.events.off("pointerout");
     // Animate the rotation to center the clicked country
     chart.animate({
@@ -109,36 +144,31 @@ console.log(chart);
 
     setTimeout(function(){
       chart.events.on("pointerout", function() {
-        rotationAnimation=createAnimation(chart.get("rotationX"));
+        rotationAnimation = createAnimation(chart.get("rotationX"));
       });
-    }, 1000);
-  });
+    }, 1900);
 
-  polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
-    let id = target.dataItem.dataContext.id;
-    let value = countryValues[id];
-    if (value) {
-      if (value < 30)
-        return am5.color(0x7AFE65);  // Light green
-      else if (value >= 30 && value < 60)
-        return am5.color(0xFEC465);  // Orange
-      else
-        return am5.color(0xFE6565);  // Red
-    } else {
-      return fill;  // Solid white
-    }
+  }
   });
+  
 
-  // Create series for background fill
-  var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
-  backgroundSeries.mapPolygons.template.setAll({
-    fill: am5.color("rgb(255,255,255)"),
-    fillOpacity: 0,
-    strokeOpacity: 0
-  });
-  backgroundSeries.data.push({
-    geometry: am5map.getGeoRectangle(90, 180, -90, -180)
-  });
+  // polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
+  //   let id = target.dataItem.dataContext.id;
+  //   let value = countryValues[id];
+  //   if (value) {
+  //     if (value < 30)
+  //       return am5.color(0x7AFE65);  // Light green
+  //     else if (value >= 30 && value < 60)
+  //       return am5.color(0xFEC465);  // Orange
+  //     else
+  //       return am5.color(0xFE6565);  // Red
+  //   } else {
+  //     return fill;  // Solid white
+  //   }
+  // });
+
+
+
   var graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
   graticuleSeries.mapLines.template.setAll({ strokeOpacity: 0, stroke: root.interfaceColors.get("alternativeBackground") });
 
@@ -152,6 +182,55 @@ console.log(chart);
   chart.events.on("pointerout", function() {
     rotationAnimation=createAnimation(chart.get("rotationX"));
   });
+
+  // Create polygon series for projected circles
+  var circleSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+  polygonSeries.events.on("datavalidated", function () {
+      circleSeries.data.clear();
+      var data = Object.keys(countryValues);
+      for (var i = 0; i < data.length; i++) {
+        var dataContext = data[i];
+        var countryDataItem = polygonSeries.getDataItemById(dataContext);
+        var countryPolygon = countryDataItem.get("mapPolygon");
+        var value = countryValues[data[i]];
+    
+        var radius = value/30;
+    
+        if (countryPolygon) {
+          var geometry = am5map.getGeoCircle(countryPolygon.visualCentroid(), radius);
+          circleSeries.data.push({
+            //name: undefined,
+            //value: undefined,
+           // polygonTemplate:am5.color("#ccc") ,
+            geometry: geometry
+          });
+          circleSeries.mapPolygons.template.setAll({
+            fill: am5.color("#C9D666"),
+            fillOpacity: 0.7
+          });
+        }
+      }
+    });
+var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+  backgroundSeries.mapPolygons.template.setAll({
+    fill: am5.color("rgb(255,255,255)"),
+    fillOpacity: 0,
+    strokeOpacity: 0
+  });
+  backgroundSeries.data.push({
+    geometry: am5map.getGeoRectangle(90, 180, -90, -180)
+  });
+
+    // Add click event on backgroundSeries to handle clicks outside of countries
+  // backgroundSeries.mapPolygons.template.events.on("click", function() {
+  //   console.log("click");
+  //   if (focusedPolygon) {
+  //     focusedPolygon.set("fill", defaultFill);
+  //     focusedPolygon.set("strokeWidth", defaultStrokeWidth);
+  //     focusedPolygon.set("stroke", defaultStroke);
+  //     focusedPolygon = null;
+  //   }
+  // });
 
   // Make stuff animate on load
   chart.appear(1000, 100);

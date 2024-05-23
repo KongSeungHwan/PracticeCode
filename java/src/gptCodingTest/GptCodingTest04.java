@@ -12,7 +12,6 @@ public class GptCodingTest04 {
     }
     public static boolean isPalindrome(String input){
         String phrase = input.replaceAll("^[\\W]$","");
-        System.out.println();
         return IntStream.rangeClosed(0,input.length()-1).boxed().sorted(Collections.reverseOrder()).map(e->input.split("")[e]).collect(Collectors.joining())==input;
     }
 }
