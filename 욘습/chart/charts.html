@@ -139,15 +139,18 @@ function createBarChart(id,data){
         minGridDistance: 30,
         minorGridEnabled: true
         });
+
+        // Hide yAxis labels
         yRenderer.grid.template.set("location", 1);
         
         var yAxis = chart.yAxes.push(
-        am5xy.CategoryAxis.new(root, {
-            maxDeviation: 0,
-            categoryField: "name",
-            renderer: yRenderer
-        })
+            am5xy.CategoryAxis.new(root, {
+                maxDeviation: 0,
+                categoryField: "name",
+                renderer: yRenderer
+            })
         );
+        yAxis.get("renderer").labels.template.set("visible", false);
         
         var xAxis = chart.xAxes.push(
         am5xy.ValueAxis.new(root, {
@@ -307,6 +310,17 @@ function createDoughnutChart(id,data,keyword){
     }));
 
     label.set("text", keyword);
+
+    // Create legend
+    var legend = chart.children.push(am5.Legend.new(root, {
+        centerX: am5.p50,
+        x: am5.p50,
+        marginTop: 15,
+        marginBottom: 15
+    }));
+    
+    // Link series data items to the legend
+    legend.data.setAll(series.dataItems);
     
     series.appear(1000, 100);
 }
