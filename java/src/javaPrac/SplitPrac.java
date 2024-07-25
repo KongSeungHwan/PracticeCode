@@ -13,7 +13,7 @@ import java.util.Map;
 public class SplitPrac {
 
     public static void main(String args[]){
-        String key = "";
+        String key = "v5+sD5rtmOP7v2mqji0NTCSUmEaiVuVzXqriXDtFliZzoH10RRFuCeFKCEefbVp/o+QcBui6/zG2GGQj6Oupfw==";
         Map<Integer,String> urlMap = new HashMap<>();
         Map<Integer,Map<String,String>> reqMap = new HashMap<>();
         urlMap.put(1,"http://211.188.64.69/OpenAPI/service/tech/techall");
