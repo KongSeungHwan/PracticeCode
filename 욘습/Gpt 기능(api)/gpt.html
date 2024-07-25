@@ -14,8 +14,8 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            color:white;
-            display:none;
+            color: white;
+            display: none;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             width: 80%;
             padding: 20px;
@@ -24,7 +24,7 @@
             background-color: black;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            display:flex;
+            display: flex;
             justify-content: center;
             flex-direction: column;
             align-items: center;
@@ -35,18 +35,20 @@
         #chatContainer {
             box-sizing: content-box;
             width: 100%;
-            height:400px;
+            height: 400px;
             overflow-y: auto;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 20px;
         }
-        #userChat{
-            width:100%;
+        #userChat {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
         }
         .userInput {
-            width: calc(100% - 80px);
+            width: calc(100% - 100px);
             padding: 10px;
             margin-right: 10px;
             border: 1px solid #ccc;
@@ -81,27 +83,27 @@
         .errorMessage {
             background-color: #f8d7da;
         }
-        .chatIcon{
-            position:fixed;
-            right:1%;
-            bottom:1%;
+        .chatIcon {
+            position: fixed;
+            right: 1%;
+            bottom: 1%;
             background-color: black;
-            width:70px;
-            height:70px;
+            width: 70px;
+            height: 70px;
             border-radius: 1rem;
             border: double white;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            cursor:pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
-        .chatTitle{
-            font-weight:bolder;
+        .chatTitle {
+            font-weight: bolder;
             font-size: 2rem;
         }
-        .chatIcon img{
-            width:50px;
-            height:50px;
+        .chatIcon img {
+            width: 50px;
+            height: 50px;
         }
     </style>
 </head>
@@ -111,28 +113,31 @@
         
         <div id="chatContainer"></div>
         <div id="loading" style="display: none;">Loading...</div>
-        <div id="userChat"><textarea class="userInput" id="userInput" placeholder="메시지 입력..." onkeypress="handleKeyPress(event)"></textarea></div>
-        <button class="sendButton" onclick="sendMessage()">전송</button>
+        <div id="userChat">
+            <textarea class="userInput" id="userInput" placeholder="메시지 입력..." onkeypress="handleKeyPress(event)"></textarea>
+            <button class="sendButton" onclick="sendMessage()">전송</button>
+        </div>
     </div>
     <div class="chatIcon" onclick="openChat()"><img src="./img/chatIcon.svg" alt="챗봇이미지"/></div>
         
     <script>
-        function openChat(){
+        function openChat() {
             var ele = document.getElementsByClassName("container")[0]; 
-            if(ele.style.display == 'flex'){
+            if (ele.style.display == 'flex') {
                 ele.classList.remove("on");
                 setTimeout(function() {
                     ele.style.display = "none";
                 }, 500);
             } else {
-                ele.style.display ="flex";
+                ele.style.display = "flex";
                 setTimeout(function() {
                     ele.classList.add("on");
                 }, 50);
             }
         }
-        function callChatGPTAPI(userInput) {
-            const api_key = "sk-proj-cYgn4H1FrNoMm3nV3GqST3BlbkFJz15mWzNStJj0tfQ7O4w3";
+        
+        async function callChatGPTAPI(userInput) {
+            const api_key = "sk-proj-BEVl4YwLxyT1jh5WGXIUT3BlbkFJDcRql22zYU3oCpdhgjm5";
             const apiUrl = "https://api.openai.com/v1/chat/completions";
             
             const headers = {
@@ -141,35 +146,69 @@
             };
             
             const data = {
-                model:"gpt-3.5-turbo",
+                model: "gpt-3.5-turbo",
                 messages: [
                     { role: "system", content: "" },
-                    { role: "user", content: userInput+" 256자 이내로" }
+                    { role: "user", content: userInput + " 256자 이내로" }
                 ],
-                temperature:1,
-                max_tokens:256,
-                top_p:1,
-                frequency_penalty:0,
-                presence_penalty:0
+                temperature: 1,
+                max_tokens: 256,
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0,
+                stream: true
             };
             
             document.getElementById("loading").style.display = "block";
 
-            fetch(apiUrl, {
-                method: "POST",
-                headers: headers,
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let text = '';
+                const chatContainer = document.getElementById("chatContainer");
+                const messageDiv = document.createElement("div");
+                const uuid= crypto.randomUUID();
+                messageDiv.classList.add("message", "system");
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                messageDiv.id = uuid;
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split('\n').filter(line => line.trim() !== '');
+                    for (const line of lines) {
+                        const parsedLine = line.replace(/^data: /, '');
+                        if (parsedLine === '[DONE]') {
+                            break;
+                        }
+                        try {
+                            const parsedData = JSON.parse(parsedLine);
+                            const content = parsedData.choices[0].delta?.content || '';
+                            document.getElementById(uuid).innerText += content;
+                        } catch (error) {
+                            console.error('Error parsing JSON:', error);
+                        }
+                    }
+                }
+
                 document.getElementById("loading").style.display = "none";
-                displayMessage(data.choices[0].message.content);
-            })
-            .catch(error => {
+            } catch (error) {
                 document.getElementById("loading").style.display = "none";
                 displayMessage("API 요청 중 오류가 발생했습니다.", "error");
                 console.error("Error:", error);
-            });
+            }
         }
         
         function sendMessage() {
