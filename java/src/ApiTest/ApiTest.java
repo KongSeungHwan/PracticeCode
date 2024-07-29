@@ -1,16 +1,24 @@
-package javaPrac;
+package ApiTest;
 
 
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
-public class SplitPrac {
+public class ApiTest {
 
     public static void main(String args[]){
         String key = "v5+sD5rtmOP7v2mqji0NTCSUmEaiVuVzXqriXDtFliZzoH10RRFuCeFKCEefbVp/o+QcBui6/zG2GGQj6Oupfw==";
@@ -26,22 +34,18 @@ public class SplitPrac {
         urlMap.put(5,"http://211.188.64.69/OpenAPI/service/tech/patentall");
         //한국산업기술진흥원_기술은행 기부/나눔 기술정보 DB 서비스
         try {
-            responseXml(urlMap.get(1),key);
-            responseXml(urlMap.get(2),key);
-            responseXml(urlMap.get(3),key);
-            responseXml(urlMap.get(4),key);
-            responseXml(urlMap.get(5),key);
-        } catch (IOException e) {
+            for (int i = 1 ; i < 6; i++)responseXml(urlMap.get(i),key);
+        } catch (IOException | ParserConfigurationException | SAXException e) {
             throw new RuntimeException(e);
         }
 
 
     }
-    public static void responseXml(String apiUrl,String key) throws IOException {
+    public static void responseXml(String apiUrl,String key) throws IOException, ParserConfigurationException, SAXException {
         StringBuilder urlBuilder = new StringBuilder(apiUrl); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "="+URLEncoder.encode(key)); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호 (미입력시 1)*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지당 개수 (미입력시 10)*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*페이지당 개수 (미입력시 10)*/
         URL url = new URL(urlBuilder.toString());
         System.out.println(urlBuilder.toString());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -61,6 +65,20 @@ public class SplitPrac {
         }
         rd.close();
         conn.disconnect();
-        System.out.println(sb.toString());
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser saxParser = factory.newSAXParser();
+        ItemListSaxHandler handler = new ItemListSaxHandler();
+        saxParser.parse( new ByteArrayInputStream(sb.toString().getBytes()),handler);
+
+        List<Map<String,Object>> list = handler.getItemList();
+
+        IntStream.rangeClosed(0,list.size()-1).forEach(e->{
+            System.out.println("item");
+            list.get(e).keySet().stream().sorted().toList().forEach(k->{
+                System.out.println("\t"+k+":"+list.get(e).get(k));
+            });
+        });
+        
     }
 }
