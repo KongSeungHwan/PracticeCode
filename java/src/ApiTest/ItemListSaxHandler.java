@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemListSaxHandler extends DefaultHandler {
-    List<Map<String,Object>> itemList = new ArrayList<>();
+    List<Map<String,String>> itemList = new ArrayList<>();
     private String data;
-    private Map<String,Object> current= new HashMap<>();
-    public List<Map<String,Object>> getItemList() {
+    private Map<String,String> current= new HashMap<>();
+
+    private int totalCount = 0;
+    public List<Map<String,String>> getItemList() {
         return itemList;
     }
     @Override
@@ -31,8 +33,14 @@ public class ItemListSaxHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if(!qName.matches("items|body")){
             if(!qName.equals("item")){
-                current.put(qName,data);
-            } else itemList.add(current);
+                if(qName.matches("totalCount")){
+                    totalCount = Integer.parseInt(data);
+                }else current.put(qName,data);
+            }
+            else itemList.add(current);
         }
+    }
+    public int getTotalCount() {
+        return totalCount;
     }
 }
