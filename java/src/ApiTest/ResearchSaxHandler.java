@@ -9,27 +9,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class ItemListSaxHandler extends DefaultHandler {
+public class ResearchSaxHandler extends DefaultHandler {
     List<Map<String,String>> itemList = new ArrayList<>();
     private String data;
-    private String token;
-    private String currentAttr;
     private Map<String,String> current= new HashMap<>();
 
     private int totalCount = 0;
     public List<Map<String,String>> getItemList() {
         return itemList;
     }
-    ItemListSaxHandler(List<String> keywords){
-        token = String.join("|", keywords);
-    }
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (qName.equals("record")) {
+        if (qName.equals("item")) {
             current= new HashMap<>();
+            current.put("attributes",IntStream.rangeClosed(0,attributes.getLength()-1).boxed()
+                    .map(idx-> String.format("%s:%s",attributes.getQName(idx),attributes.getValue(idx)))
+                    .collect(Collectors.joining("^")));
         }
-        if(qName.equals("item")) currentAttr = attributes.getValue("metaCode");
         data = "";
     }
     @Override
@@ -38,9 +36,14 @@ public class ItemListSaxHandler extends DefaultHandler {
     }
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if(qName.equals("item")&&currentAttr.matches(token)) current.put(currentAttr,data);
-        if(qName.equals("record")) itemList.add(current);
-        if(qName.equals("TotalCount")) totalCount = Integer.parseInt(data);
+        if(!qName.matches("items|body")){
+            if(!qName.equals("item")){
+                if(qName.matches("totalCount")){
+                    totalCount = Integer.parseInt(data);
+                }else current.put(qName,data);
+            }
+            else itemList.add(current);
+        }
     }
     public int getTotalCount() {
         return totalCount;

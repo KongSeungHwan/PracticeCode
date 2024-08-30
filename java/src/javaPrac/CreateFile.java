@@ -1,4 +1,4 @@
-package Prac;
+package javaPrac;
 
 import java.io.*;
 
