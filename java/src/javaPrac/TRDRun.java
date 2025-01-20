@@ -1,4 +1,4 @@
-package Prac3;
+package javaPrac;
 
 public class TRDRun extends Thread{
 	int s;

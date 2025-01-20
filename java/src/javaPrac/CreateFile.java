@@ -10,7 +10,7 @@ public class CreateFile {
 			System.out.println("생성할 폴더이름:");
 			String directory = n.readLine();
 			System.out.println("생성할 파일이름:");
-			String file = n.readLine()+".txt";//그냥 임의로 함 txt확장자 파일로
+			String file = n.readLine()+".txt";
 			if(!new File("src/"+directory).exists()) new File("src/Prac/"+directory).mkdir();
 			if(!new File("src/"+directory+"/"+file).exists()) new File("src/Prac/"+directory+"/"+file).createNewFile();
 			BufferedWriter bw= new BufferedWriter(new FileWriter("src/Prac/"+directory+"/"+file));

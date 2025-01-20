@@ -1,0 +1,253 @@
+
+<style>
+    .chart_wrap{
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .chart_list{
+        display:flex;
+        flex-wrap:wrap;
+        flex-direction:row;
+        justify-content: center;
+        width:100%;
+        max-width: 1100px;
+    }
+    .chart_area{
+        display:flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 470px;
+        height:300px;
+        border: 1px solid rgb(99, 33, 3);
+        margin:1%;
+    }
+    .chart_area.first{
+        border: 1px solid rgb(12, 18, 77);
+    }
+    .chart_area.second{
+        border: 1px solid rgb(99, 33, 3);
+    }
+
+    .header-text,.header-unit{
+        color:white;
+        font-size: 15px;
+        font-weight: bolder;
+        margin: 0 5px;
+    }
+    .header{
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items:center;
+        width:100%;
+        height:7.5%;
+        border: 2px solid rgb(99, 33, 3);
+        background-color:rgb(99, 33, 3);
+        margin-bottom: 5%;
+    }
+    .header.first{
+        border: 1px solid rgb(12, 18, 77);
+        background-color:rgb(12, 18, 77);
+    }
+    .header.second{
+        border: 2px solid rgb(99, 33, 3);
+        background-color:rgb(99, 33, 3);
+    }
+
+    .header-text::before{
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: rgb(209, 93, 15);
+        border-radius: 50%;
+        margin: 0 5px;
+    }
+    .barChart{
+        width:470px;
+        height:300px;
+    }
+</style>
+
+<!-- Resources -->
+<script src="./amchart/index.js"></script>
+<script src="./amchart/xy.js"></script>
+<script src="./amchart/Animated.js"></script>
+
+<!-- Chart code -->
+<script>
+am5.addLicense("AM5C11203068661121");
+am5.addLicense("AM5M11203148921121");
+var keyData = ["대기업","중견기업","중소기업"];
+var colorSet = {
+    "대기업": am5.color(0x334cff),   // 대기업 색상
+    "중견기업": am5.color(0xd56a25), // 중견기업 색상
+    "중소기업": am5.color(0x9c9b97)  // 중소기업 색상
+};
+function createData(){
+    return [{
+    "year": "'23",
+    "대기업": rdNum(100,1),
+    "중견기업": rdNum(100,1),
+    "중소기업": rdNum(100,1)
+    }, {
+    "year": "'24",
+    "대기업": rdNum(100,1),
+    "중견기업": rdNum(100,1),
+    "중소기업": rdNum(100,1)
+    }, {
+    "year": "'25",
+    "대기업": rdNum(100,1),
+    "중견기업": rdNum(100,1),
+    "중소기업": rdNum(100,1)
+    }];
+}
+function rdNum(max,min){
+    return Math.floor(Math.random()*(max-min)+min); 
+}
+function makeChart(id,data,keyData){
+    var root = am5.Root.new(id);
+
+    root.setThemes([
+        am5themes_Animated.new(root)
+    ]);
+    
+
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: false,
+        panY: false,
+        paddingLeft: 0,
+        wheelX: "none",
+        wheelY: "none",
+        layout: root.verticalLayout
+    }));
+
+    var legend = chart.children.push(
+    am5.Legend.new(root, {
+        centerX: am5.percent(50),
+        x: am5.percent(50),
+        layout: root.horizontalLayout,
+        maxHeight: 50,
+        scale: 0.8
+    })
+    );
+    var xRenderer = am5xy.AxisRendererX.new(root, {
+        cellStartLocation: 0.25,
+        cellEndLocation: 0.75,
+        minorGridEnabled: true
+    })
+    
+    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        categoryField: "year",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(root, {})
+    }));
+    
+    xRenderer.grid.template.setAll({
+        location: 1,
+    })
+    
+    xAxis.data.setAll(data);
+    
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererY.new(root, {
+            strokeOpacity: 0.1
+        })
+    }));
+    
+
+    function makeSeries(name, fieldName) {
+    var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+        name: name,
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: fieldName,
+        categoryXField: "year"
+    }));
+    
+    series.columns.template.setAll({
+        tooltipText: "{name}:{valueY}",
+        width: am5.percent(90),
+        tooltipY: 0,
+        strokeOpacity: 0
+    });
+    
+    series.data.setAll(data);
+    series.columns.template.set("fill", colorSet[name]);
+    series.columns.template.set("stroke", colorSet[name]);
+
+    
+
+    series.appear();
+    
+    series.bullets.push(function () {
+        return am5.Bullet.new(root, {
+        locationY: 0,
+        sprite: am5.Label.new(root, {
+            text: "{valueY}",
+            fill: colorSet[name],
+            centerY: 0,
+            centerX: am5.p50,
+            populateText: true
+        })
+        });
+    });
+    
+    legend.data.push(series);
+    }
+    keyData.forEach(key=>makeSeries(key, key));
+    chart.appear(1000, 100);
+}
+
+am5.ready(function() {
+    var chartNum = rdNum(10,1);
+    var chartData = [];
+    var keyDatas = [];
+    Array.from({length:8}).map((_,i)=>i+1).forEach(item=>{
+        chartData = createData();
+        keyDatas = chartData.map(item=> Object.keys(item));
+        makeChart("chart"+item,chartData,keyData);
+    });
+});
+</script>
+<div class="chart_wrap">
+    <div class="chart_list">
+        <div class="chart_area first" id="chart_area">
+            <div class="header first"><span class="header-text">광고 매출액</span><span class="header-unit">(단위:백만원)</span></div>
+            <div id="chart1" class="barChart"></div>
+        </div>
+        <div class="chart_area first" id="chart_area">
+            <div class="header first"><span class="header-text">금융 매출액</span><span class="header-unit">(단위:백만원)</span></div>
+            <div id="chart2" class="barChart"></div>
+        </div>
+        <div class="chart_area first" id="chart_area">
+            <div class="header first"> <span class="header-text">통신 매출액</span><span class="header-unit">(단위:백만원)</span></div>
+            <div id="chart3" class="barChart"></div>
+        </div>
+        <div class="chart_area first" id="chart_area">
+            <div class="header first"><span class="header-text">기타 매출액</span><span class="header-unit">(단위:백만원)</span></div>
+            <div id="chart4" class="barChart"></div>
+        </div>
+    </div>
+    <div class="chart_list">
+        <div class="chart_area second" id="chart_area">
+            <div class="header second"><span class="header-text">광고 고용 건</span><span class="header-unit">(단위:명)</span></div>
+            <div id="chart5" class="barChart"></div>
+        </div>
+        <div class="chart_area second" id="chart_area">
+            <div class="header"><span class="header-text">금융 고용 건</span><span class="header-unit">(단위:명)</span></div>
+            <div id="chart6" class="barChart"></div>
+        </div>
+        <div class="chart_area second" id="chart_area">
+            <div class="header second"> <span class="header-text">통신 고용 건</span><span class="header-unit">(단위:명)</span></div>
+            <div id="chart7" class="barChart"></div>
+        </div>
+        <div class="chart_area second" id="chart_area">
+            <div class="header second"><span class="header-text">기타 고용 건</span><span class="header-unit">(단위:명)</span></div>
+            <div id="chart8" class="barChart"></div>
+        </div>
+    </div>
+</div>

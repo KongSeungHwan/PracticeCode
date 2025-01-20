@@ -9,7 +9,7 @@ public class StreamPrac {
     public static void main(String args[]){
         List<Student> list= IntStream.rangeClosed(0,15).boxed().map(i->
             new Student(
-                    IntStream.rangeClosed(0,new Random().nextInt(10)+1)
+                    IntStream.rangeClosed(0,new Random().nextInt(6)+4)
                             .boxed()
                             .map(ch-> String.valueOf((char)(97+(new Random().nextInt(15)+1)) )).collect(Collectors.joining()),
                     new Random().nextInt(100)+1,
@@ -18,8 +18,8 @@ public class StreamPrac {
             )
         ).toList();
         System.out.printf("전교생 %d명 출력: \n\n",list.size());
-        Map<Integer, Map<Integer, Map<Integer, List<Student>>>> stuMap = list.stream().collect(Collectors.groupingBy(Student::getYear,Collectors.groupingBy(Student::getSubClass,Collectors.groupingBy(v->(v.getScore()/10)*10)
-        )));
+        Map<Integer, Map<Integer, Map<Integer, List<Student>>>> stuMap =
+                list.stream().collect(Collectors.groupingBy(Student::getYear,Collectors.groupingBy(Student::getSubClass,Collectors.groupingBy(v->(v.getScore()/10)*10))));
         IntStream.rangeClosed(1,4).boxed().forEach(y->{
             Map<Integer, Map<Integer, List<Student>>> subMap = stuMap.get(y);
             System.out.printf("%d학년 : \n",y);

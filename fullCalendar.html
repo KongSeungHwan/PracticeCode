@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <script src='./js/index.global.min.js'></script>
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+         locale: 'ko', // 한국어로 설정
+        selectable: true,
+        eventSources: [
+            // your event source
+            {
+                events: [
+                    {
+                    title  : '독감 걸린 날',
+                    start  : '2025-01-03'
+                    },
+                    {
+                    title  : '본가 내려 갔다온 날',
+                    start  : '2025-01-11',
+                    end    : '2025-01-13'
+                    },
+                    {
+                    title  : '반차 쓰는 날',
+                    start  : '2025-01-17T14:00:00',
+                    allDay : false
+                    }
+                ],
+            color: 'black',     // an option!
+            textColor: 'yellow' // an option!
+            }
+
+            // any other event sources...
+
+        ],
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        dateClick: function(info) {
+            alert(info.dateStr+" 누름");
+        }
+        // select: function(info) {
+        //     alert('selected ' + info.startStr + ' to ' + info.endStr);
+        // }
+        });
+
+        calendar.render();
+      });
+
+    </script>
+  </head>
+  <body>
+    <div id='calendar'></div>
+  </body>
+</html>

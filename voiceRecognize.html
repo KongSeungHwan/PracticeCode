@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Speech API 예제</title>
+</head>
+<body>
+    <button id="start">음성 인식 시작</button>
+    <button id="stop">음성 인식 중지</button>
+    <p id="result"></p>
+
+    <script>
+        const recognition = new webkitSpeechRecognition(); // 또는 SpeechRecognition
+        recognition.lang = 'ko-KR'; // 한국어 인식 설정
+
+        const startButton = document.getElementById('start');
+        const stopButton = document.getElementById('stop');
+        const resultParagraph = document.getElementById('result');
+
+        startButton.addEventListener('click', () => {
+            recognition.start();
+        });
+
+        stopButton.addEventListener('click', () => {
+            recognition.stop();
+        });
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            resultParagraph.textContent = transcript;
+        };
+    </script>
+</body>
+</html>

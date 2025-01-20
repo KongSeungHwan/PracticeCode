@@ -1,4 +1,4 @@
-package Prac;
+package javaPrac;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
